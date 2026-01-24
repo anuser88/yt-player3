@@ -37,7 +37,7 @@
             // 
             // txtUrl
             // 
-            txtUrl.Location = new Point(12, 352);
+            txtUrl.Location = new Point(12, 356);
             txtUrl.Name = "txtUrl";
             txtUrl.PlaceholderText = "Type the URL here";
             txtUrl.Size = new Size(298, 23);
@@ -45,7 +45,7 @@
             // 
             // btnPlay
             // 
-            btnPlay.Location = new Point(338, 352);
+            btnPlay.Location = new Point(338, 356);
             btnPlay.Name = "btnPlay";
             btnPlay.Size = new Size(75, 23);
             btnPlay.TabIndex = 1;
@@ -56,7 +56,7 @@
             // btnStop
             // 
             btnStop.Enabled = false;
-            btnStop.Location = new Point(442, 351);
+            btnStop.Location = new Point(450, 356);
             btnStop.Name = "btnStop";
             btnStop.Size = new Size(75, 23);
             btnStop.TabIndex = 2;
@@ -78,7 +78,7 @@
             label1.AutoSize = true;
             label1.BackColor = Color.Transparent;
             label1.Font = new Font("Cambria", 24F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point, 0);
-            label1.ForeColor = Color.FromArgb(255,0,0);
+            label1.ForeColor = Color.FromArgb(255, 0, 0);
             label1.Location = new Point(246, 9);
             label1.Name = "label1";
             label1.Size = new Size(233, 37);
@@ -89,12 +89,14 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(753, 387);
+            ClientSize = new Size(754, 391);
             Controls.Add(label1);
             Controls.Add(lblStatus);
             Controls.Add(btnStop);
             Controls.Add(btnPlay);
             Controls.Add(txtUrl);
+            MaximumSize = new Size(770, 430);
+            MinimumSize = new Size(770, 430);
             Name = "Form1";
             Text = "youtube";
             Load += Form1_Loady;

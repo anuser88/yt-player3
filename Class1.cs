@@ -49,6 +49,8 @@ namespace youtube
             lbl.Dock = DockStyle.Top;
             lbl.TextAlign = ContentAlignment.MiddleCenter;
 
+            ControlBox = false;
+
             btnSetup.Click += async (_, __) =>
             {
                 btnSetup.Enabled = false;
@@ -60,6 +62,7 @@ namespace youtube
                     await EnsureDependencies(_cts.Token);
                     lbl.Text = "Close this window";
                     btnSetup.Text = "Done 👍";
+                    ControlBox = true;
                 }
                 catch (OperationCanceledException)
                 {
