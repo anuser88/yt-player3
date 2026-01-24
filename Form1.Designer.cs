@@ -55,6 +55,7 @@
             // 
             // btnStop
             // 
+            btnStop.Enabled = false;
             btnStop.Location = new Point(442, 351);
             btnStop.Name = "btnStop";
             btnStop.Size = new Size(75, 23);
@@ -77,8 +78,8 @@
             label1.AutoSize = true;
             label1.BackColor = Color.Transparent;
             label1.Font = new Font("Cambria", 24F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point, 0);
-            label1.ForeColor = Color.FromArgb(0, 0, 0);
-            label1.Location = new Point(284, 9);
+            label1.ForeColor = Color.FromArgb(255,0,0);
+            label1.Location = new Point(246, 9);
             label1.Name = "label1";
             label1.Size = new Size(233, 37);
             label1.TabIndex = 4;
@@ -96,6 +97,7 @@
             Controls.Add(txtUrl);
             Name = "Form1";
             Text = "youtube";
+            Load += Form1_Loady;
             ResumeLayout(false);
             PerformLayout();
         }
