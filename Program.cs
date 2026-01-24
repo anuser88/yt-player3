@@ -11,8 +11,7 @@ namespace youtube
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
-            var setup = new Setup();
-            setup.Main();
+            Setup.Man();
             Application.Run(new Form1());
         }
     }
