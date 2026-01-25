@@ -1,7 +1,9 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Security.Policy;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -24,10 +26,16 @@ namespace youtube
         {
             InitializeComponent();
         }
-
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public string TxtUrlText
+        {
+            get => txtUrl.Text;
+            set => txtUrl.Text = value;
+        }
         // color animation - keeps UI responsive since it awaits Task.Delay
         private async void Form1_Loady(object sender, EventArgs e)
         {
+            var search = new Search();search.Show();
             while (!IsDisposed)
             {
                 for (int i = 0; i < 180 && !IsDisposed; i++)
@@ -186,7 +194,16 @@ namespace youtube
             btnPlay.Enabled = true;
             btnStop.Enabled = false;
         }
-
+        private void SearchChose(object sender, EventArgs e)
+        {
+            if (!txtUrl.Text.StartsWith("https://"))
+            {
+                string id = txtUrl.Text;
+                string imgurl = $"https://i.ytimg.com/vi/{id}/maxresdefault.jpg";
+                pictureBox1.LoadAsync(imgurl);
+                txtUrl.Text = "https://www.youtube.com/watch?v=" + id;
+            }
+        }
         public static Color HsvToArgb(float h, float s, float v, int a = 255)
         {
             h = h % 360;

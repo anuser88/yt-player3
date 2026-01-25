@@ -1,7 +1,10 @@
 namespace youtube
 {
-    internal static class Program
+    public static class Program
     {
+        // public static property to hold the single main Form1 instance
+        public static Form1? MainForm { get; set; }
+
         /// <summary>
         ///  The main entry point for the application.
         /// </summary>
@@ -12,7 +15,9 @@ namespace youtube
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
             Setup.Man();
-            Application.Run(new Form1());
+
+            MainForm = new Form1();
+            Application.Run(MainForm);
         }
     }
 }

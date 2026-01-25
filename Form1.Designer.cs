@@ -33,6 +33,8 @@
             btnStop = new Button();
             lblStatus = new Label();
             label1 = new Label();
+            pictureBox1 = new PictureBox();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
             // 
             // txtUrl
@@ -42,6 +44,7 @@
             txtUrl.PlaceholderText = "Type the URL here";
             txtUrl.Size = new Size(298, 23);
             txtUrl.TabIndex = 0;
+            txtUrl.TextChanged += SearchChose;
             // 
             // btnPlay
             // 
@@ -85,11 +88,21 @@
             label1.TabIndex = 4;
             label1.Text = "Youtube player";
             // 
+            // pictureBox1
+            // 
+            pictureBox1.Location = new Point(12, 68);
+            pictureBox1.Name = "pictureBox1";
+            pictureBox1.Size = new Size(251, 166);
+            pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox1.TabIndex = 5;
+            pictureBox1.TabStop = false;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(754, 391);
+            Controls.Add(pictureBox1);
             Controls.Add(label1);
             Controls.Add(lblStatus);
             Controls.Add(btnStop);
@@ -100,6 +113,7 @@
             Name = "Form1";
             Text = "youtube";
             Load += Form1_Loady;
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -116,5 +130,6 @@
         private Button btnStop;
         private Label lblStatus;
         private Label label1;
+        private PictureBox pictureBox1;
     }
 }
