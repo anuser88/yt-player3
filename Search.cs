@@ -21,9 +21,9 @@ namespace youtube
             MinimumSize = new Size(Width, Height);
             MaximumSize = new Size(Width, Height);
 
-            var txtSearch = new TextBox { Dock = DockStyle.Top };
-            var btnSearch = new Button { Text = "Search", Dock = DockStyle.Top, Height = 30 };
-            var lv = new ListView { Dock = DockStyle.Fill };
+            TextBox txtSearch = new TextBox { Dock = DockStyle.Top };
+            Button btnSearch = new Button { Text = "Search", Dock = DockStyle.Top, Height = 30 };
+            ListView lv = new ListView { Dock = DockStyle.Fill };
 
             lv.View = View.Details;
             lv.FullRowSelect = true;
@@ -50,6 +50,11 @@ namespace youtube
                 if (lv.SelectedItems.Count == 0) return;
                 string id = lv.SelectedItems[0].SubItems[1].Text;
                 Program.MainForm!.TxtUrlText = id;
+                Program.MainForm!.VideoTitle = lv.SelectedItems[0].SubItems[0].Text;
+            };
+            this.FormClosed += (_, __) =>
+            {
+                Program.MainForm!.SearchOpened = false;
             };
         }
 
@@ -61,24 +66,24 @@ namespace youtube
             string? json = ExtractInitialData(html);
             if (json == null) return;
 
-            using var doc = JsonDocument.Parse(json);
-            var root = doc.RootElement;
+            using JsonDocument doc = JsonDocument.Parse(json);
+            JsonElement root = doc.RootElement;
 
-            var sections =
+            JsonElement sections =
                 root.GetProperty("contents")
                     .GetProperty("twoColumnSearchResultsRenderer")
                     .GetProperty("primaryContents")
                     .GetProperty("sectionListRenderer")
                     .GetProperty("contents");
 
-            foreach (var section in sections.EnumerateArray())
+            foreach (JsonElement section in sections.EnumerateArray())
             {
-                if (!section.TryGetProperty("itemSectionRenderer", out var itemSection))
+                if (!section.TryGetProperty("itemSectionRenderer", out JsonElement itemSection))
                     continue;
 
-                foreach (var item in itemSection.GetProperty("contents").EnumerateArray())
+                foreach (JsonElement item in itemSection.GetProperty("contents").EnumerateArray())
                 {
-                    if (!item.TryGetProperty("videoRenderer", out var video))
+                    if (!item.TryGetProperty("videoRenderer", out JsonElement video))
                         continue;
 
                     string? id = video.GetProperty("videoId").GetString();
@@ -89,7 +94,7 @@ namespace youtube
                              .GetProperty("runs")[0]
                              .GetProperty("text")
                              .GetString() ?? String.Empty;
-                    var lvi = new ListViewItem(title);
+                    ListViewItem lvi = new ListViewItem(title);
                     lvi.SubItems.Add(id);
                     lv.Items.Add(lvi);
                 }

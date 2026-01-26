@@ -14,12 +14,12 @@ namespace youtube
 
     public class MainForm : Form
     {
-        private static readonly HttpClient s_httpClient = new HttpClient();
+        private static HttpClient s_httpClient = new HttpClient();
 
-        private readonly Button btnSetup = new Button();
-        private readonly Button btnCancel = new Button();
-        private readonly ProgressBar progress = new ProgressBar();
-        private readonly Label lbl = new Label();
+        private Button btnSetup = new Button();
+        private Button btnCancel = new Button();
+        private ProgressBar progress = new ProgressBar();
+        private Label lbl = new Label();
 
         private CancellationTokenSource? _cts;
 
@@ -29,7 +29,7 @@ namespace youtube
             Width = 400;
             Height = 180;
 
-            btnSetup.Text = "Check and Install Dependencies";
+            btnSetup.Text = "";
             btnSetup.Dock = DockStyle.Top;
             btnSetup.Height = 40;
 
@@ -45,13 +45,13 @@ namespace youtube
             progress.Value = 0;
             progress.Style = ProgressBarStyle.Blocks;
 
-            lbl.Text = "Idle";
+            lbl.Text = "Check and Install Dependencies";
             lbl.Dock = DockStyle.Top;
             lbl.TextAlign = ContentAlignment.MiddleCenter;
 
             ControlBox = false;
 
-            btnSetup.Click += async (_, __) =>
+            Load += async (_, __) =>
             {
                 btnSetup.Enabled = false;
                 btnCancel.Enabled = true;
@@ -60,19 +60,20 @@ namespace youtube
                 try
                 {
                     await EnsureDependencies(_cts.Token);
-                    lbl.Text = "Close this window";
+                    /*lbl.Text = "Close this window";
                     btnSetup.Text = "Done 👍";
-                    ControlBox = true;
+                    ControlBox = true;*/
+                    Close();
                 }
                 catch (OperationCanceledException)
                 {
                     lbl.Text = "Cancelled";
-                    btnSetup.Text = "Cancelled";
+                    btnSetup.Text = "Retry";
                 }
                 catch (Exception ex)
                 {
                     lbl.Text = "Error: " + ex.Message;
-                    btnSetup.Text = "Failed";
+                    btnSetup.Text = "Retry";
                 }
                 finally
                 {
@@ -159,7 +160,7 @@ namespace youtube
 
         private void InstallVlc(string installerPath)
         {
-            var psi = new ProcessStartInfo
+            ProcessStartInfo psi = new ProcessStartInfo
             {
                 FileName = installerPath,
                 Arguments = "/S",
@@ -167,7 +168,7 @@ namespace youtube
                 CreateNoWindow = true
             };
 
-            using var p = Process.Start(psi);
+            using Process? p = Process.Start(psi);
             p?.WaitForExit();
         }
 
@@ -182,16 +183,16 @@ namespace youtube
 
             try
             {
-                using var response = await s_httpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead, ct);
+                using HttpResponseMessage response = await s_httpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead, ct);
                 response.EnsureSuccessStatusCode();
 
-                var totalBytes = response.Content.Headers.ContentLength ?? -1L;
-                var canReportProgress = totalBytes > 0;
+                long totalBytes = response.Content.Headers.ContentLength ?? -1L;
+                bool canReportProgress = totalBytes > 0;
 
-                using var contentStream = await response.Content.ReadAsStreamAsync(ct);
-                using var fileStream = new FileStream(output, FileMode.Create, FileAccess.Write, FileShare.None, 81920, true);
+                using Stream contentStream = await response.Content.ReadAsStreamAsync(ct);
+                using FileStream fileStream = new FileStream(output, FileMode.Create, FileAccess.Write, FileShare.None, 81920, true);
 
-                var buffer = new byte[81920];
+                byte[] buffer = new byte[81920];
                 long totalRead = 0;
                 int read;
                 while ((read = await contentStream.ReadAsync(buffer, 0, buffer.Length, ct)) > 0)

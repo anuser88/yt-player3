@@ -32,9 +32,11 @@
             btnPlay = new Button();
             btnStop = new Button();
             lblStatus = new Label();
-            label1 = new Label();
-            pictureBox1 = new PictureBox();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
+            title = new Label();
+            previewImg = new PictureBox();
+            VidTitle = new Label();
+            openSearch = new Button();
+            ((System.ComponentModel.ISupportInitialize)previewImg).BeginInit();
             SuspendLayout();
             // 
             // txtUrl
@@ -48,7 +50,7 @@
             // 
             // btnPlay
             // 
-            btnPlay.Location = new Point(338, 356);
+            btnPlay.Location = new Point(330, 355);
             btnPlay.Name = "btnPlay";
             btnPlay.Size = new Size(75, 23);
             btnPlay.TabIndex = 1;
@@ -59,7 +61,7 @@
             // btnStop
             // 
             btnStop.Enabled = false;
-            btnStop.Location = new Point(450, 356);
+            btnStop.Location = new Point(420, 356);
             btnStop.Name = "btnStop";
             btnStop.Size = new Size(75, 23);
             btnStop.TabIndex = 2;
@@ -76,34 +78,57 @@
             lblStatus.TabIndex = 3;
             lblStatus.Text = "   ";
             // 
-            // label1
+            // title
             // 
-            label1.AutoSize = true;
-            label1.BackColor = Color.Transparent;
-            label1.Font = new Font("Cambria", 24F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point, 0);
-            label1.ForeColor = Color.FromArgb(255, 0, 0);
-            label1.Location = new Point(246, 9);
-            label1.Name = "label1";
-            label1.Size = new Size(233, 37);
-            label1.TabIndex = 4;
-            label1.Text = "Youtube player";
+            title.AutoSize = true;
+            title.BackColor = Color.Transparent;
+            title.Font = new Font("Cambria", 24F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point, 0);
+            title.ForeColor = Color.FromArgb(255, 0, 0);
+            title.Location = new Point(246, 9);
+            title.Name = "title";
+            title.Size = new Size(234, 37);
+            title.TabIndex = 4;
+            title.Text = "Youtube Player";
             // 
-            // pictureBox1
+            // previewImg
             // 
-            pictureBox1.Location = new Point(12, 68);
-            pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(251, 166);
-            pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBox1.TabIndex = 5;
-            pictureBox1.TabStop = false;
+            previewImg.Location = new Point(12, 68);
+            previewImg.Name = "previewImg";
+            previewImg.Size = new Size(251, 166);
+            previewImg.SizeMode = PictureBoxSizeMode.Zoom;
+            previewImg.TabIndex = 5;
+            previewImg.TabStop = false;
+            // 
+            // VidTitle
+            // 
+            VidTitle.AutoSize = true;
+            VidTitle.Font = new Font("Arial", 14.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            VidTitle.Location = new Point(12, 237);
+            VidTitle.Name = "VidTitle";
+            VidTitle.Size = new Size(25, 22);
+            VidTitle.TabIndex = 6;
+            VidTitle.Text = "   ";
+            // 
+            // openSearch
+            // 
+            openSearch.Enabled = false;
+            openSearch.Location = new Point(510, 356);
+            openSearch.Name = "openSearch";
+            openSearch.Size = new Size(88, 23);
+            openSearch.TabIndex = 7;
+            openSearch.Text = "Open Search";
+            openSearch.UseVisualStyleBackColor = true;
+            openSearch.Click += openSearch_Click;
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(754, 391);
-            Controls.Add(pictureBox1);
-            Controls.Add(label1);
+            Controls.Add(openSearch);
+            Controls.Add(VidTitle);
+            Controls.Add(previewImg);
+            Controls.Add(title);
             Controls.Add(lblStatus);
             Controls.Add(btnStop);
             Controls.Add(btnPlay);
@@ -111,9 +136,9 @@
             MaximumSize = new Size(770, 430);
             MinimumSize = new Size(770, 430);
             Name = "Form1";
-            Text = "youtube";
+            Text = "Youtube Player";
             Load += Form1_Loady;
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)previewImg).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -129,7 +154,9 @@
         private Button btnPlay;
         private Button btnStop;
         private Label lblStatus;
-        private Label label1;
-        private PictureBox pictureBox1;
+        private Label title;
+        private PictureBox previewImg;
+        private Label VidTitle;
+        private Button openSearch;
     }
 }

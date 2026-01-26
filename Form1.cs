@@ -12,6 +12,10 @@ namespace youtube
 {
     public partial class Form1 : Form
     {
+        public Form1()
+        {
+            InitializeComponent();
+        }
         // cache VLC path lookup to avoid repeated IO checks
         private readonly Lazy<string?> _vlcPath = new(() =>
         {
@@ -21,26 +25,34 @@ namespace youtube
             if (File.Exists(p2)) return p2;
             return null;
         });
-
-        public Form1()
-        {
-            InitializeComponent();
-        }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string TxtUrlText
         {
             get => txtUrl.Text;
             set => txtUrl.Text = value;
         }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public string VideoTitle
+        {
+            get => VidTitle.Text;
+            set => VidTitle.Text = value;
+        }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool SearchOpened
+        {
+            get;
+            set => openSearch.Enabled = !value;
+        } = true;
         // color animation - keeps UI responsive since it awaits Task.Delay
         private async void Form1_Loady(object sender, EventArgs e)
         {
-            var search = new Search();search.Show();
+            Search search = new Search();
+            search.Show();
             while (!IsDisposed)
             {
                 for (int i = 0; i < 180 && !IsDisposed; i++)
                 {
-                    label1.ForeColor = HsvToArgb(i * 2, 1, 1);
+                    title.ForeColor = HsvToArgb(i * 2, 1, 1);
                     await Task.Delay(30).ConfigureAwait(true);
                 }
             }
@@ -49,7 +61,7 @@ namespace youtube
         // async, non-blocking, and can be cancelled via token
         private async Task<(string video, string audio)> GetStreamUrlsAsync(string url, CancellationToken ct = default)
         {
-            var psi = new ProcessStartInfo
+            ProcessStartInfo psi = new ProcessStartInfo
             {
                 FileName = "yt-dlp",
                 Arguments = $"-f bv*+ba/b -g \"{url}\"",
@@ -58,21 +70,21 @@ namespace youtube
                 CreateNoWindow = true
             };
 
-            using var process = Process.Start(psi);
+            using Process? process = Process.Start(psi);
             if (process == null)
                 return (string.Empty, string.Empty);
 
             try
             {
                 // Read output asynchronously and wait for exit. If cancelled, kill process.
-                var outputTask = process.StandardOutput.ReadToEndAsync();
-                var exitTask = process.WaitForExitAsync(ct);
+                Task<string> outputTask = process.StandardOutput.ReadToEndAsync();
+                Task exitTask = process.WaitForExitAsync(ct);
 
                 // Wait for both tasks; if token is cancelled WaitForExitAsync will throw OperationCanceledException
                 await Task.WhenAll(outputTask, exitTask).ConfigureAwait(false);
 
                 string output = outputTask.Result ?? string.Empty;
-                var lines = output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                string[] lines = output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
 
                 if (lines.Length >= 2) return (lines[0], lines[1]);
                 if (lines.Length == 1) return (lines[0], string.Empty);
@@ -92,7 +104,7 @@ namespace youtube
 
         private async void btnPlay_Click(object sender, EventArgs e)
         {
-            string url = txtUrl.Text.Trim();
+            string url = TxtUrlText.Trim();
             if (string.IsNullOrEmpty(url))
                 url = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
 
@@ -115,7 +127,7 @@ namespace youtube
                     return;
                 }
 
-                var (video, audio) = stream;
+                (string video, string audio) = stream;
 
                 if (string.IsNullOrEmpty(video))
                 {
@@ -145,7 +157,7 @@ namespace youtube
 
         void StartVlc(string videoUrl, string audioUrl)
         {
-            var vlc = _vlcPath.Value;
+            string? vlc = _vlcPath.Value;
             if (string.IsNullOrEmpty(vlc))
             {
                 lblStatus.Text = "VLC not found";
@@ -196,12 +208,12 @@ namespace youtube
         }
         private void SearchChose(object sender, EventArgs e)
         {
-            if (!txtUrl.Text.StartsWith("https://"))
+            if (!TxtUrlText.StartsWith("https://"))
             {
-                string id = txtUrl.Text;
+                string id = TxtUrlText;
                 string imgurl = $"https://i.ytimg.com/vi/{id}/maxresdefault.jpg";
-                pictureBox1.LoadAsync(imgurl);
-                txtUrl.Text = "https://www.youtube.com/watch?v=" + id;
+                previewImg.LoadAsync(imgurl);
+                TxtUrlText = "https://www.youtube.com/watch?v=" + id;
             }
         }
         public static Color HsvToArgb(float h, float s, float v, int a = 255)
@@ -227,6 +239,13 @@ namespace youtube
             byte B = (byte)((b + m) * 255);
 
             return Color.FromArgb(a, R, G, B);
+        }
+
+        private void openSearch_Click(object sender, EventArgs e)
+        {
+            Search search = new Search();
+            search.Show();
+            SearchOpened = true;
         }
     }
 }
