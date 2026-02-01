@@ -14,12 +14,12 @@ namespace youtube
 
     public class MainForm : Form
     {
-        private static HttpClient s_httpClient = new HttpClient();
+        private static readonly HttpClient s_httpClient = new();
 
-        private Button btnSetup = new Button();
-        private Button btnCancel = new Button();
-        private ProgressBar progress = new ProgressBar();
-        private Label lbl = new Label();
+        private readonly Button btnSetup = new();
+        private readonly Button btnCancel = new();
+        private readonly ProgressBar progress = new();
+        private readonly Label lbl = new();
 
         private CancellationTokenSource? _cts;
 
@@ -49,7 +49,7 @@ namespace youtube
             lbl.Dock = DockStyle.Top;
             lbl.TextAlign = ContentAlignment.MiddleCenter;
 
-            ControlBox = false;
+            //ControlBox = false;
 
             Load += async (_, __) =>
             {
@@ -59,10 +59,8 @@ namespace youtube
 
                 try
                 {
+                    lbl.Text = "Do not close this window";
                     await EnsureDependencies(_cts.Token);
-                    /*lbl.Text = "Close this window";
-                    btnSetup.Text = "Done 👍";
-                    ControlBox = true;*/
                     Close();
                 }
                 catch (OperationCanceledException)
@@ -121,7 +119,18 @@ namespace youtube
         private async Task InstallYtDlp(CancellationToken ct)
         {
             string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "yt-dlp.exe");
-            if (File.Exists(path)) return;
+            if (File.Exists(path))
+            {
+                ProcessStartInfo psi = new()
+                {
+                    FileName = path,
+                    Arguments = "-U",
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };Process.Start(psi)?.WaitForExit();
+                return;
+            }
 
             lbl.Text = "Downloading yt-dlp...";
             progress.Value = 0;
@@ -158,9 +167,9 @@ namespace youtube
             return installer;
         }
 
-        private void InstallVlc(string installerPath)
+        private static void InstallVlc(string installerPath)
         {
-            ProcessStartInfo psi = new ProcessStartInfo
+            ProcessStartInfo psi = new()
             {
                 FileName = installerPath,
                 Arguments = "/S",
@@ -190,14 +199,14 @@ namespace youtube
                 bool canReportProgress = totalBytes > 0;
 
                 using Stream contentStream = await response.Content.ReadAsStreamAsync(ct);
-                using FileStream fileStream = new FileStream(output, FileMode.Create, FileAccess.Write, FileShare.None, 81920, true);
+                using FileStream fileStream = new(output, FileMode.Create, FileAccess.Write, FileShare.None, 81920, true);
 
                 byte[] buffer = new byte[81920];
                 long totalRead = 0;
                 int read;
-                while ((read = await contentStream.ReadAsync(buffer, 0, buffer.Length, ct)) > 0)
+                while ((read = await contentStream.ReadAsync(buffer.AsMemory(), ct)) > 0)
                 {
-                    await fileStream.WriteAsync(buffer, 0, read, ct);
+                    await fileStream.WriteAsync(buffer.AsMemory(0, read), ct);
                     totalRead += read;
                     if (canReportProgress)
                     {

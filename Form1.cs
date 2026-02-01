@@ -1,12 +1,6 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Diagnostics;
-using System.Drawing;
-using System.IO;
-using System.Security.Policy;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+using System.Drawing.Drawing2D;
 
 namespace youtube
 {
@@ -43,10 +37,23 @@ namespace youtube
             get;
             set => openSearch.Enabled = !value;
         } = true;
-        // color animation - keeps UI responsive since it awaits Task.Delay
-        private async void Form1_Loady(object sender, EventArgs e)
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public string AvatarUrl
         {
-            Search search = new Search();
+            get => avatar.ImageLocation ?? string.Empty;
+            set => avatar.LoadAsync(value);
+        }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public string ViewsText
+        {
+            get => Views.Text;
+            set => Views.Text = value;
+        }
+        // color animation - keeps UI responsive since it awaits Task.Delay
+        private async void Form1_Load(object sender, EventArgs e)
+        {
+            Round_avatar(sender, e);
+            Search search = new();
             search.Show();
             while (!IsDisposed)
             {
@@ -59,9 +66,9 @@ namespace youtube
         }
 
         // async, non-blocking, and can be cancelled via token
-        private async Task<(string video, string audio)> GetStreamUrlsAsync(string url, CancellationToken ct = default)
+        private static async Task<(string video, string audio)> GetStreamUrlsAsync(string url)
         {
-            ProcessStartInfo psi = new ProcessStartInfo
+            ProcessStartInfo psi = new()
             {
                 FileName = "yt-dlp",
                 Arguments = $"-f bv*+ba/b -g \"{url}\"",
@@ -78,13 +85,13 @@ namespace youtube
             {
                 // Read output asynchronously and wait for exit. If cancelled, kill process.
                 Task<string> outputTask = process.StandardOutput.ReadToEndAsync();
-                Task exitTask = process.WaitForExitAsync(ct);
+                Task exitTask = process.WaitForExitAsync();
 
                 // Wait for both tasks; if token is cancelled WaitForExitAsync will throw OperationCanceledException
                 await Task.WhenAll(outputTask, exitTask).ConfigureAwait(false);
 
                 string output = outputTask.Result ?? string.Empty;
-                string[] lines = output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                string[] lines = output.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries);
 
                 if (lines.Length >= 2) return (lines[0], lines[1]);
                 if (lines.Length == 1) return (lines[0], string.Empty);
@@ -102,7 +109,7 @@ namespace youtube
             }
         }
 
-        private async void btnPlay_Click(object sender, EventArgs e)
+        private async void BtnPlay_Click(object sender, EventArgs e)
         {
             string url = TxtUrlText.Trim();
             if (string.IsNullOrEmpty(url))
@@ -150,7 +157,7 @@ namespace youtube
             }
         }
 
-        private void btnStop_Clicky(object sender, EventArgs e)
+        private void BtnStop_Click(object sender, EventArgs e)
         {
             StopVlc();
         }
@@ -218,14 +225,14 @@ namespace youtube
         }
         public static Color HsvToArgb(float h, float s, float v, int a = 255)
         {
-            h = h % 360;
+            h %= 360;
             if (h < 0) h += 360;
 
             float c = v * s;
             float x = c * (1 - Math.Abs((h / 60f) % 2 - 1));
             float m = v - c;
 
-            float r = 0, g = 0, b = 0;
+            float r, g, b;
 
             if (h < 60) { r = c; g = x; b = 0; }
             else if (h < 120) { r = x; g = c; b = 0; }
@@ -241,11 +248,17 @@ namespace youtube
             return Color.FromArgb(a, R, G, B);
         }
 
-        private void openSearch_Click(object sender, EventArgs e)
+        private void OpenSearch_Click(object sender, EventArgs e)
         {
-            Search search = new Search();
+            Search search = new();
             search.Show();
             SearchOpened = true;
+        }
+        private void Round_avatar(object sender, EventArgs e)
+        {
+            GraphicsPath gp = new();
+            gp.AddEllipse(0, 0, avatar.Width, avatar.Height);
+            avatar.Region = new Region(gp);
         }
     }
 }
