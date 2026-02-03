@@ -16,7 +16,9 @@ namespace youtube
             MinimumSize = new Size(Width, Height);
             MaximumSize = new Size(Width, Height);
 
-            TextBox txtSearch = new(){ Dock = DockStyle.Top };
+            TextBox txtSearch = new(){ 
+                Dock = DockStyle.Top
+            };
             Button btnSearch = new() { Text = "Search", Dock = DockStyle.Top, Height = 30 };
             ListView lv = new()
             {
@@ -60,10 +62,52 @@ namespace youtube
                          .GetProperty("sources")[0]
                          .GetProperty("url")
                          .GetString() ?? string.Empty;
-                Program.MainForm!.ViewsText = 
+                Program.MainForm!.ViewsText =
                     videoInfo.GetProperty("shortViewCountText")
-                         .GetProperty("simpleText")
-                         .GetString() ?? string.Empty;
+                        .GetProperty("accessibility")
+                        .GetProperty("accessibilityData")
+                        .GetProperty("label")
+                        .GetString() ?? string.Empty;
+                try
+                {
+                    Program.MainForm!.VideoLenText =
+                        videoInfo.GetProperty("lengthText")
+                            .GetProperty("simpleText")
+                            .GetString() ?? string.Empty;
+                    Program.MainForm!.VideoLenColor = Color.Gray;
+                }
+                catch
+                {
+                    Program.MainForm!.VideoLenText =
+                        videoInfo.GetProperty("badges")[0]
+                            .GetProperty("metadataBadgeRenderer")
+                            .GetProperty("label")
+                            .GetString() ?? "Live";
+                    Program.MainForm!.VideoLenColor = Color.Red;
+                }
+                try
+                {
+                    Program.MainForm!.PubTimeText =
+                        videoInfo.GetProperty("publishedTimeText")
+                            .GetProperty("simpleText")
+                            .GetString() ?? string.Empty;
+                }
+                catch
+                {
+                    Program.MainForm!.PubTimeText = string.Empty;
+                }
+                Program.MainForm!.OwnerNameText =
+                    videoInfo.GetProperty("ownerText")
+                        .GetProperty("runs")[0]
+                        .GetProperty("text")
+                        .GetString() ?? string.Empty;
+                Program.MainForm!.ChannelUrl =
+                videoInfo.GetProperty("ownerText")
+                    .GetProperty("runs")[0]
+                    .GetProperty("navigationEndpoint")
+                    .GetProperty("browseEndpoint")
+                    .GetProperty("canonicalBaseUrl")
+                    .GetString() ?? string.Empty;
             };
             FormClosed += (_, __) =>
             {

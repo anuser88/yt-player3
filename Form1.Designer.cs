@@ -38,22 +38,29 @@
             openSearch = new Button();
             avatar = new PictureBox();
             Views = new Label();
+            LengthText = new Label();
+            PubTime = new Label();
+            OwnerName = new Label();
             ((System.ComponentModel.ISupportInitialize)previewImg).BeginInit();
             ((System.ComponentModel.ISupportInitialize)avatar).BeginInit();
             SuspendLayout();
             // 
             // txtUrl
             // 
+            txtUrl.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            txtUrl.Cursor = Cursors.IBeam;
             txtUrl.Location = new Point(12, 356);
             txtUrl.Name = "txtUrl";
-            txtUrl.PlaceholderText = "Type the URL here";
+            txtUrl.PlaceholderText = "Type the URL here, or search";
             txtUrl.Size = new Size(298, 23);
             txtUrl.TabIndex = 0;
             txtUrl.TextChanged += SearchChose;
             // 
             // btnPlay
             // 
-            btnPlay.Location = new Point(330, 355);
+            btnPlay.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            btnPlay.Cursor = Cursors.Hand;
+            btnPlay.Location = new Point(330, 356);
             btnPlay.Name = "btnPlay";
             btnPlay.Size = new Size(75, 23);
             btnPlay.TabIndex = 1;
@@ -63,6 +70,8 @@
             // 
             // btnStop
             // 
+            btnStop.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            btnStop.Cursor = Cursors.Hand;
             btnStop.Enabled = false;
             btnStop.Location = new Point(420, 356);
             btnStop.Name = "btnStop";
@@ -75,7 +84,7 @@
             // lblStatus
             // 
             lblStatus.AutoSize = true;
-            lblStatus.Location = new Point(12, 317);
+            lblStatus.Location = new Point(12, 332);
             lblStatus.Name = "lblStatus";
             lblStatus.Size = new Size(16, 15);
             lblStatus.TabIndex = 3;
@@ -105,10 +114,11 @@
             // VidTitle
             // 
             VidTitle.AllowDrop = true;
-            VidTitle.Anchor = AnchorStyles.None;
+            VidTitle.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             VidTitle.AutoEllipsis = true;
+            VidTitle.BackColor = Color.Transparent;
             VidTitle.Font = new Font("Arial Narrow", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            VidTitle.Location = new Point(12, 212);
+            VidTitle.Location = new Point(3, 200);
             VidTitle.Name = "VidTitle";
             VidTitle.Size = new Size(730, 22);
             VidTitle.TabIndex = 6;
@@ -117,6 +127,8 @@
             // 
             // openSearch
             // 
+            openSearch.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            openSearch.Cursor = Cursors.Hand;
             openSearch.Enabled = false;
             openSearch.Location = new Point(510, 356);
             openSearch.Name = "openSearch";
@@ -128,16 +140,22 @@
             // 
             // avatar
             // 
-            avatar.Location = new Point(246, 265);
+            avatar.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            avatar.Cursor = Cursors.Hand;
+            avatar.Location = new Point(248, 241);
             avatar.Name = "avatar";
             avatar.Size = new Size(45, 45);
             avatar.SizeMode = PictureBoxSizeMode.Zoom;
             avatar.TabIndex = 8;
             avatar.TabStop = false;
+            avatar.Click += GotoChannel;
             // 
             // Views
             // 
-            Views.Location = new Point(330, 234);
+            Views.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            Views.BackColor = Color.Transparent;
+            Views.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            Views.Location = new Point(330, 222);
             Views.Name = "Views";
             Views.RightToLeft = RightToLeft.No;
             Views.Size = new Size(156, 16);
@@ -145,11 +163,54 @@
             Views.Text = "     ";
             Views.TextAlign = ContentAlignment.MiddleRight;
             // 
+            // LengthText
+            // 
+            LengthText.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            LengthText.AutoSize = true;
+            LengthText.BackColor = SystemColors.Control;
+            LengthText.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            LengthText.Location = new Point(388, 175);
+            LengthText.Name = "LengthText";
+            LengthText.RightToLeft = RightToLeft.No;
+            LengthText.Size = new Size(88, 15);
+            LengthText.TabIndex = 10;
+            LengthText.Text = "                           ";
+            LengthText.TextAlign = ContentAlignment.BottomRight;
+            // 
+            // PubTime
+            // 
+            PubTime.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            PubTime.AutoSize = true;
+            PubTime.BackColor = Color.Transparent;
+            PubTime.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            PubTime.Location = new Point(246, 222);
+            PubTime.Name = "PubTime";
+            PubTime.RightToLeft = RightToLeft.No;
+            PubTime.Size = new Size(22, 15);
+            PubTime.TabIndex = 11;
+            PubTime.Text = "     ";
+            PubTime.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // OwnerName
+            // 
+            OwnerName.AutoSize = true;
+            OwnerName.Cursor = Cursors.Hand;
+            OwnerName.Font = new Font("Segoe UI Black", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            OwnerName.Location = new Point(293, 253);
+            OwnerName.Name = "OwnerName";
+            OwnerName.Size = new Size(66, 21);
+            OwnerName.TabIndex = 12;
+            OwnerName.Text = "              ";
+            OwnerName.Click += GotoChannel;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(754, 391);
+            Controls.Add(OwnerName);
+            Controls.Add(PubTime);
+            Controls.Add(LengthText);
             Controls.Add(Views);
             Controls.Add(avatar);
             Controls.Add(openSearch);
@@ -183,5 +244,8 @@
         private Button openSearch;
         private PictureBox avatar;
         private Label Views;
+        private Label LengthText;
+        private Label PubTime;
+        private Label OwnerName;
     }
 }

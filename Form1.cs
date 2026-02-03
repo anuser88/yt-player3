@@ -44,10 +44,46 @@ namespace youtube
             set => avatar.LoadAsync(value);
         }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public string OwnerNameText
+        {
+            get => OwnerName.Text;
+            set => OwnerName.Text = value;
+        }
+        private string _channelUrl = string.Empty;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public string ChannelUrl 
+        {
+            get => _channelUrl;
+            set => _channelUrl = value;
+        }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string ViewsText
         {
             get => Views.Text;
             set => Views.Text = value;
+        }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public string PubTimeText
+        {
+            get => PubTime.Text;
+            set => PubTime.Text = value;
+        }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public string VideoLenText
+        {
+            get => LengthText.Text;
+            set => LenTextSet(value);
+        }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public Color VideoLenColor
+        {
+            get => LengthText.BackColor;
+            set => LengthText.BackColor = value;
+        }
+        private void LenTextSet(string t)
+        {
+            LengthText.Text = t;
+            LengthText.Left = 480 - LengthText.Width;
         }
         // color animation - keeps UI responsive since it awaits Task.Delay
         private async void Form1_Load(object sender, EventArgs e)
@@ -259,6 +295,17 @@ namespace youtube
             GraphicsPath gp = new();
             gp.AddEllipse(0, 0, avatar.Width, avatar.Height);
             avatar.Region = new Region(gp);
+        }
+        private void GotoChannel(object sender, EventArgs e)
+        {
+            if (_channelUrl == string.Empty)
+                return;
+            string channelUrl = $"https://www.youtube.com{_channelUrl}";
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = channelUrl,
+                UseShellExecute = true
+            });
         }
     }
 }
