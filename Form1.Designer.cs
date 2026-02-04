@@ -41,6 +41,7 @@
             LengthText = new Label();
             PubTime = new Label();
             OwnerName = new Label();
+            DownloadButton = new Button();
             ((System.ComponentModel.ISupportInitialize)previewImg).BeginInit();
             ((System.ComponentModel.ISupportInitialize)avatar).BeginInit();
             SuspendLayout();
@@ -127,14 +128,14 @@
             // 
             // openSearch
             // 
-            openSearch.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            openSearch.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             openSearch.Cursor = Cursors.Hand;
             openSearch.Enabled = false;
             openSearch.Location = new Point(510, 356);
             openSearch.Name = "openSearch";
-            openSearch.Size = new Size(88, 23);
+            openSearch.Size = new Size(75, 23);
             openSearch.TabIndex = 7;
-            openSearch.Text = "Open Search";
+            openSearch.Text = "Search";
             openSearch.UseVisualStyleBackColor = true;
             openSearch.Click += OpenSearch_Click;
             // 
@@ -203,11 +204,24 @@
             OwnerName.Text = "              ";
             OwnerName.Click += GotoChannel;
             // 
+            // DownloadButton
+            // 
+            DownloadButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            DownloadButton.Cursor = Cursors.Hand;
+            DownloadButton.Location = new Point(600, 356);
+            DownloadButton.Name = "DownloadButton";
+            DownloadButton.Size = new Size(75, 23);
+            DownloadButton.TabIndex = 13;
+            DownloadButton.Text = "Download";
+            DownloadButton.UseVisualStyleBackColor = true;
+            DownloadButton.Click += DownloadButton_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(754, 391);
+            Controls.Add(DownloadButton);
             Controls.Add(OwnerName);
             Controls.Add(PubTime);
             Controls.Add(LengthText);
@@ -247,5 +261,6 @@
         private Label LengthText;
         private Label PubTime;
         private Label OwnerName;
+        private Button DownloadButton;
     }
 }

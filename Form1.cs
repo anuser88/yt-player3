@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing.Drawing2D;
+using System.IO;
 
 namespace youtube
 {
@@ -51,7 +52,7 @@ namespace youtube
         }
         private string _channelUrl = string.Empty;
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public string ChannelUrl 
+        public string ChannelUrl
         {
             get => _channelUrl;
             set => _channelUrl = value;
@@ -306,6 +307,38 @@ namespace youtube
                 FileName = channelUrl,
                 UseShellExecute = true
             });
+        }
+        private static string GetSaveDirectory()
+        {
+            SaveFileDialog sfd = new()
+            {
+                FileName = "this name doesnt work lol",
+                Filter = "WEBM Files |*.webm",
+                OverwritePrompt = false
+            };
+
+
+            if (sfd.ShowDialog() == DialogResult.OK)
+            {
+                return Path.GetDirectoryName(sfd.FileName)!;
+            }
+            return string.Empty;
+        }
+
+        private void DownloadButton_Click(object sender, EventArgs e)
+        {
+            if (TxtUrlText == string.Empty)
+                return;
+            string SaveDir = GetSaveDirectory();
+            ProcessStartInfo psi = new()
+            {
+                FileName = "yt-dlp",
+                Arguments = $"-f \"bv*+ba/b\" -N 8 -o \"{SaveDir}\\%(title)s.%(ext)s\" \"{TxtUrlText}\"",
+                RedirectStandardOutput = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+            Process.Start(psi);
         }
     }
 }
