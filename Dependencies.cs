@@ -135,7 +135,7 @@ namespace youtube
             lbl.Text = "Downloading yt-dlp...";
             progress.Value = 0;
             await DownloadFile(
-                "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe",
+                "https://github.com/anuser88/yt-dlp-fork/releases/latest/download/yt-dlp.exe",
                 path,
                 ct
             );
