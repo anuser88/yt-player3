@@ -330,15 +330,20 @@ namespace youtube
             if (TxtUrlText == string.Empty)
                 return;
             string SaveDir = GetSaveDirectory();
-            ProcessStartInfo psi = new()
+            Process proc = new() { StartInfo = new ProcessStartInfo()
             {
                 FileName = "yt-dlp",
                 Arguments = $"-f \"bv*+ba/b\" -N 8 -o \"{SaveDir}\\%(title)s.%(ext)s\" \"{TxtUrlText}\"",
-                RedirectStandardOutput = true,
+                RedirectStandardOutput = false,
                 UseShellExecute = false,
-                CreateNoWindow = true
-            };
-            Process.Start(psi);
+                CreateNoWindow = false
+            }};
+            proc.Start();
+            DownloadButton.Enabled = false;
+            lblStatus.Text = "Downloading...";
+            proc.WaitForExit();
+            DownloadButton.Enabled = true;
+            lblStatus.Text = "Download complete!";
         }
     }
 }
