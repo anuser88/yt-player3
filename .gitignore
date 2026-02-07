@@ -363,5 +363,6 @@ MigrationBackup/
 FodyWeavers.xsd
 
 # hmmm
-yt-dlp.exe
+yt-dlp-setup.exe
 vlcsetup.exe
+yt-dlp-fork/

@@ -118,27 +118,30 @@ namespace youtube
 
         private async Task InstallYtDlp(CancellationToken ct)
         {
-            string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "yt-dlp.exe");
+            string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"yt-dlp-fork\yt-dlp.exe");
+            string path2 = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"yt-dlp-setup.exe");
             if (File.Exists(path))
             {
-                ProcessStartInfo psi = new()
-                {
-                    FileName = path,
-                    Arguments = "-U",
-                    RedirectStandardOutput = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = true
-                };Process.Start(psi)?.WaitForExit();
                 return;
             }
 
-            lbl.Text = "Downloading yt-dlp...";
+            lbl.Text = "Downloading yt-dlp-fork...";
             progress.Value = 0;
             await DownloadFile(
-                "https://github.com/anuser88/yt-dlp-fork/releases/latest/download/yt-dlp.exe",
-                path,
+                "https://github.com/anuser88/yt-dlp-fork/releases/latest/download/yt-dlp-setup.exe",
+                path2,
                 ct
             );
+            ProcessStartInfo psi = new()
+            {
+                FileName = path2,
+                Arguments = "/VERYSILENT",
+                UseShellExecute = true,
+                CreateNoWindow = true
+            };
+
+            using Process? p = Process.Start(psi);
+            p?.WaitForExit();
         }
 
         // ================= VLC =================

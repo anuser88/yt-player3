@@ -105,9 +105,10 @@ namespace youtube
         // async, non-blocking, and can be cancelled via token
         private static async Task<(string video, string audio)> GetStreamUrlsAsync(string url)
         {
+            string ytdlp = Path.Combine(AppContext.BaseDirectory, "yt-dlp-fork", "yt-dlp.exe");
             ProcessStartInfo psi = new()
             {
-                FileName = "yt-dlp",
+                FileName = ytdlp,
                 Arguments = $"-f bv*+ba/b -g \"{url}\"",
                 RedirectStandardOutput = true,
                 UseShellExecute = false,
@@ -330,9 +331,10 @@ namespace youtube
             if (TxtUrlText == string.Empty)
                 return;
             string SaveDir = GetSaveDirectory();
+            string ytdlp = Path.Combine(AppContext.BaseDirectory, "yt-dlp-fork", "yt-dlp.exe");
             Process proc = new() { StartInfo = new ProcessStartInfo()
             {
-                FileName = "yt-dlp",
+                FileName = ytdlp,
                 Arguments = $"-f \"bv*+ba/b\" -N 8 -o \"{SaveDir}\\%(title)s.%(ext)s\" \"{TxtUrlText}\"",
                 RedirectStandardOutput = false,
                 UseShellExecute = false,
